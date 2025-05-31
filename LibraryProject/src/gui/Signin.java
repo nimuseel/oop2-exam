@@ -82,7 +82,6 @@ public class Signin extends JDialog {
         		    LibraryMenu lm = new LibraryMenu(null, user.isAdmin());
         		    setVisible(false);	
         		    lm.setVisible(true);
-        		    // WinMain 등 다음 창으로 전환
         		} else {
         		    JOptionPane.showMessageDialog(null, "ID 또는 비밀번호가 잘못되었습니다.");
         		}
