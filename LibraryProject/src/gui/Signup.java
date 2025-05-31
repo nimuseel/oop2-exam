@@ -1,6 +1,9 @@
 package gui;
 
 import java.awt.EventQueue;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+
 import javax.swing.*;
 
 import dao.UserDAO;
@@ -48,6 +51,16 @@ public class Signup extends JDialog {
 		getContentPane().add(pwLabel);
 		pwField = new JPasswordField();
 		pwField.setBounds(120, 106, 229, 40);
+		pwField.addKeyListener(new KeyAdapter() {
+		    @Override
+		    public void keyTyped(KeyEvent e) {
+		        char c = e.getKeyChar();
+		        // 영어 대소문자만 허용
+		        if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))) {
+		            e.consume(); // 입력 무시
+		        }
+		    }
+		});
 		getContentPane().add(pwField);
 
 		JLabel pwConfirmLabel = new JLabel("비밀번호 확인:");
@@ -55,6 +68,16 @@ public class Signup extends JDialog {
 		getContentPane().add(pwConfirmLabel);
 		pwConfirmField = new JPasswordField();
 		pwConfirmField.setBounds(120, 147, 229, 40);
+		pwConfirmField.addKeyListener(new KeyAdapter() {
+		    @Override
+		    public void keyTyped(KeyEvent e) {
+		        char c = e.getKeyChar();
+		        // 영어 대소문자만 허용
+		        if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))) {
+		            e.consume(); // 입력 무시
+		        }
+		    }
+		});
 		getContentPane().add(pwConfirmField);
 
 		JButton registerBtn = new JButton("회원가입");

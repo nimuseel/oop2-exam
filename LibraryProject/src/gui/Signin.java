@@ -2,6 +2,8 @@ package gui;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import javax.swing.*;
 
@@ -45,6 +47,16 @@ public class Signin extends JDialog {
         getContentPane().add(pwLabel);
         pwField = new JPasswordField();
         pwField.setBounds(120, 90, 229, 40);
+        pwField.addKeyListener(new KeyAdapter() {
+		    @Override
+		    public void keyTyped(KeyEvent e) {
+		        char c = e.getKeyChar();
+		        // 영어 대소문자만 허용
+		        if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))) {
+		            e.consume(); // 입력 무시
+		        }
+		    }
+		});
         getContentPane().add(pwField);
 
         JButton loginBtn = new JButton("로그인");

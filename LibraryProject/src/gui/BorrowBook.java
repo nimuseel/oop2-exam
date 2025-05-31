@@ -21,21 +21,21 @@ public class BorrowBook extends JDialog {
         new Book("해리포터", "J.K.롤링", "문학동네", "5555666677778", "가능")
     );
 
-    public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                	BorrowBook dialog = new BorrowBook(null);
-                    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-                    dialog.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					BorrowBook dialog = new BorrowBook(null);
+					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+					dialog.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
 
-    public BorrowBook(JFrame parent) {
+	public BorrowBook(JFrame parent) {
         super(parent, "도서 대출", true);
         setSize(650, 480);
         setLocationRelativeTo(parent);
