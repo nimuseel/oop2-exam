@@ -7,6 +7,9 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.*;
 
+import dao.UserDAO;
+import dto.User;
+
 public class Signin extends JDialog {
 
     private static final long serialVersionUID = 1L;
@@ -68,8 +71,21 @@ public class Signin extends JDialog {
 
         loginBtn.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		String id = new String();
-                setVisible(false);	
+        		String id = new String(idField.getText());
+        		String pw = new String(pwField.getPassword());
+        		
+        		System.out.println(id+" / "+ pw);
+        		
+        		UserDAO userDAO = new UserDAO();
+        		User user = userDAO.loginUser(id, pw);
+        		if (!user.equals(null)) {
+        		    LibraryMenu lm = new LibraryMenu(null, user.isAdmin());
+        		    setVisible(false);	
+        		    lm.setVisible(true);
+        		    // WinMain 등 다음 창으로 전환
+        		} else {
+        		    JOptionPane.showMessageDialog(null, "ID 또는 비밀번호가 잘못되었습니다.");
+        		}
         	}
         });
         signupBtn.addActionListener(new ActionListener() {

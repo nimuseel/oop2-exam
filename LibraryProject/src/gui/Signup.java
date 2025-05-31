@@ -121,6 +121,9 @@ public class Signup extends JDialog {
 				return;
 			}
 			setVisible(false);
+			Signin si = new Signin(null);
+			si.setVisible(true);
+			
 		});
 		cancelBtn.addActionListener(e -> setVisible(false));
 	}
