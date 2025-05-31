@@ -19,12 +19,6 @@ public class Main extends JDialog {
             Signin loginDialog = new Signin(null);
             setVisible(false);
             loginDialog.setVisible(true);
-            if (loginDialog.isLoggedIn()) {
-                boolean isAdmin = loginDialog.getIdText().equals("admin");
-                dispose(); // 메인 다이얼로그 닫기
-                LibraryMenu menuDialog = new LibraryMenu(null, isAdmin);
-                menuDialog.setVisible(true);
-            }
         });
     }
 

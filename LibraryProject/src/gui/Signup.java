@@ -101,7 +101,7 @@ public class Signup extends JDialog {
 			String pwConfirm = new String(pwConfirmField.getPassword());
 			String name = new String(nameField.getText());
 			if (!isValidPassword(pw)) {
-				JOptionPane.showMessageDialog(this, "비밀번호는 대소문자 각각 1개 이상,\n특수문자(!@#*_^ 중 하나) 1개 이상을 포함해야 합니다.",
+				JOptionPane.showMessageDialog(this, "비밀번호는 대소문자 각각 1개 이상을 포함해야 합니다.",
 						"비밀번호 오류", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
@@ -132,17 +132,14 @@ public class Signup extends JDialog {
 	private boolean isValidPassword(String pw) {
 		boolean hasUpper = false;
 		boolean hasLower = false;
-		boolean hasSpecial = false;
-		String specialChars = "!@#*_^";
+	
 		for (char c : pw.toCharArray()) {
 			if (Character.isUpperCase(c))
 				hasUpper = true;
 			else if (Character.isLowerCase(c))
 				hasLower = true;
-			else if (specialChars.indexOf(c) >= 0)
-				hasSpecial = true;
 		}
-		return hasUpper && hasLower && hasSpecial;
+		return hasUpper && hasLower;
 	}
 
 	public InsertResult isRegistered() {

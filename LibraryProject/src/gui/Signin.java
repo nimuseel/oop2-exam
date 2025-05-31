@@ -97,11 +97,7 @@ public class Signin extends JDialog {
         });
     }
 
-    public boolean isLoggedIn() {
-        return loggedIn;
-    }
-
-    public String getIdText() {
+        public String getIdText() {
         return idField.getText();
     }
 
