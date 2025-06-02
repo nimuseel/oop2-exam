@@ -63,7 +63,7 @@ public class LibraryMenu extends JDialog {
             closeBtn.setBounds(120, 380, 150, 40);
             getContentPane().add(closeBtn);
 
-            closeBtn.addActionListener(e -> setVisible(false));
+            closeBtn.addActionListener(e -> dispose());
         } else {
             JButton closeBtn = new JButton("닫기");
             closeBtn.setBounds(120, 280, 150, 40);
@@ -76,6 +76,7 @@ public class LibraryMenu extends JDialog {
             BorrowBook borrowBook = new BorrowBook(null);
             borrowBook.setVisible(true);
             borrowBook.setModal(true);
+            borrowBook.setAlwaysOnTop(true);
         });
 
         returnBtn.addActionListener(e -> {

@@ -7,18 +7,15 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+
+import dao.BookDAO;
+import util.InsertResult;
 
 public class CreateBook extends JDialog {
 
 	private static final long serialVersionUID = 1L;
-	
-	private JTextField titleField; 
-	private JTextField authorField;
-	private JTextField publisherField;
-	private JTextField isbnField;
-    private boolean saved = false;
-
 
 	/**
 	 * Launch the application.
@@ -53,23 +50,23 @@ public class CreateBook extends JDialog {
         titleField.setBounds(169, 1, 229, 61);
         getContentPane().add(titleField);
 
-        JLabel author = new JLabel("저자:");
-        author.setBounds(26, 74, 59, 61);
-        getContentPane().add(author);
+        JLabel authorLabel = new JLabel("저자:");
+        authorLabel.setBounds(26, 74, 59, 61);
+        getContentPane().add(authorLabel);
         JTextField authorField = new JTextField("");
         authorField.setBounds(169, 74, 229, 61);
         getContentPane().add(authorField);
 
-        JLabel publisher = new JLabel("출판사:");
-        publisher.setBounds(26, 145, 59, 61);
-        getContentPane().add(publisher);
+        JLabel publisherLabel = new JLabel("출판사:");
+        publisherLabel.setBounds(26, 145, 59, 61);
+        getContentPane().add(publisherLabel);
         JTextField publisherField = new JTextField("");
         publisherField.setBounds(169, 145, 229, 61);
         getContentPane().add(publisherField);
 
-        JLabel isbn = new JLabel("ISBN:");
-        isbn.setBounds(26, 214, 59, 61);
-        getContentPane().add(isbn);
+        JLabel isbnLabel = new JLabel("ISBN:");
+        isbnLabel.setBounds(26, 214, 59, 61);
+        getContentPane().add(isbnLabel);
         JTextField isbnField = new JTextField("");
         isbnField.setBounds(169, 214, 229, 61);
         getContentPane().add(isbnField);
@@ -82,10 +79,25 @@ public class CreateBook extends JDialog {
         getContentPane().add(cancelBtn);
 
         saveBtn.addActionListener(e -> {
-            saved = true;
-            setVisible(false);
+        	String title = titleField.getText();
+        	String author = authorField.getText();
+        	String publisher = publisherField.getText(); 
+        	String isbn = isbnField.getText();
+        	
+        	
+        	BookDAO bookDAO = new BookDAO();
+        	InsertResult ir = bookDAO.insertBook(title, author, publisher, isbn);
+        	if(ir == InsertResult.FAIL) {
+				JOptionPane.showMessageDialog(this, "예기치 못한 오류입니다.", "오류발생", JOptionPane.ERROR_MESSAGE);
+				return;
+        	}else if(ir == InsertResult.SUCCESS) {
+        		JOptionPane.showMessageDialog(this, "도서가 등록되었습니다.", "등록성공", JOptionPane.INFORMATION_MESSAGE);
+				return;
+        	}
+        	
+           // setVisible(false);
         });
-        cancelBtn.addActionListener(e -> setVisible(false));
+        cancelBtn.addActionListener(e -> dispose());
     }
 
 }

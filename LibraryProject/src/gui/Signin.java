@@ -16,7 +16,7 @@ public class Signin extends JDialog {
 
     private JTextField idField;
     private JPasswordField pwField;
-    private boolean loggedIn = false;
+ 
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -78,7 +78,7 @@ public class Signin extends JDialog {
         		
         		UserDAO userDAO = new UserDAO();
         		User user = userDAO.loginUser(id, pw);
-        		if (!user.equals(null)) {
+        		if (user != null) {
         		    LibraryMenu lm = new LibraryMenu(null, user.isAdmin());
         		    setVisible(false);	
         		    lm.setVisible(true);
