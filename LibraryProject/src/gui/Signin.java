@@ -9,6 +9,7 @@ import javax.swing.*;
 
 import dao.UserDAO;
 import dto.User;
+import util.SessionContext;
 
 public class Signin extends JDialog {
 
@@ -80,8 +81,10 @@ public class Signin extends JDialog {
         		User user = userDAO.loginUser(id, pw);
         		if (user != null) {
         		    LibraryMenu lm = new LibraryMenu(null, user.isAdmin());
+        		    SessionContext.getInstance().setCurrentUserId(id);
         		    setVisible(false);	
         		    lm.setVisible(true);
+        		    lm.setAlwaysOnTop(true);
         		} else {
         		    JOptionPane.showMessageDialog(null, "ID 또는 비밀번호가 잘못되었습니다.");
         		}

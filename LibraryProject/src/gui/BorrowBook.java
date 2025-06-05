@@ -1,8 +1,14 @@
 package gui;
 import java.awt.EventQueue;
+import java.sql.SQLException;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+
+import dao.BookDAO;
+import dao.LoanDAO;
+import dto.SearchedBook;
+import util.SessionContext;
 
 public class BorrowBook extends JDialog {
 
@@ -13,13 +19,8 @@ public class BorrowBook extends JDialog {
     private JTable resultTable;
     private DefaultTableModel tableModel;
 
-    // 예시 데이터: 실제로는 파일/DB에서 불러온 리스트를 사용
-    private List<Book> bookList = Arrays.asList(
-        new Book("해리포터", "J.K.롤링", "문학동네", "1234567890", "가능"),
-        new Book("데미안", "헤르만 헤세", "민음사", "9876543210", "대출중"),
-        new Book("자바의 정석", "남궁성", "도우출판", "1111222233334", "가능"),
-        new Book("해리포터", "J.K.롤링", "문학동네", "5555666677778", "가능")
-    );
+    private List<SearchedBook> bookList = new ArrayList<>();
+    private final BookDAO bookDAO = new BookDAO();
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -59,22 +60,30 @@ public class BorrowBook extends JDialog {
         searchBtn.setBounds(530, 20, 80, 40);
         getContentPane().add(searchBtn);
 
-        // 테이블
-        String[] columns = {"도서명", "저자", "출판사", "ISBN", "대출 여부"};
+        // 테이블 구성
+        String[] columns = {"도서명", "저자", "출판사", "ISBN", "대출 여부", "bookId"};
         tableModel = new DefaultTableModel(columns, 0) {
-            public boolean isCellEditable(int row, int column) { return false; }
+            private static final long serialVersionUID = 1L;
+
+			public boolean isCellEditable(int row, int column) {
+                return false;
+            }
         };
         resultTable = new JTable(tableModel);
+        resultTable.getColumnModel().getColumn(5).setMinWidth(0);
+        resultTable.getColumnModel().getColumn(5).setMaxWidth(0);
+        resultTable.getColumnModel().getColumn(5).setWidth(0);
+        
         JScrollPane scrollPane = new JScrollPane(resultTable);
-        scrollPane.setBounds(26, 80, 584, 200);
+        scrollPane.setBounds(26, 80, 584, 240);
         getContentPane().add(scrollPane);
 
         JButton borrowBtn = new JButton("대출하기");
-        borrowBtn.setBounds(193, 300, 120, 40);
+        borrowBtn.setBounds(180, 340, 120, 40);
         getContentPane().add(borrowBtn);
 
         JButton closeBtn = new JButton("닫기");
-        closeBtn.setBounds(325, 300, 120, 40);
+        closeBtn.setBounds(350, 340, 120, 40);
         getContentPane().add(closeBtn);
 
         // 검색 버튼
@@ -83,24 +92,34 @@ public class BorrowBook extends JDialog {
         // 대출 버튼
         borrowBtn.addActionListener(e -> borrowBook());
 
-        closeBtn.addActionListener(e -> setVisible(false));
+        closeBtn.addActionListener(e -> dispose());
     }
 
     // 검색: 대출 가능 도서만 표시
     private void searchBooks() {
-        String title = titleField.getText().trim();
+    	String title = titleField.getText().trim();
         String publisher = publisherField.getText().trim();
-
+        
         tableModel.setRowCount(0);
 
-        for (Book b : bookList) {
-            boolean match = true;
-            if (!title.isEmpty() && !b.title.contains(title)) match = false;
-            if (!publisher.isEmpty() && !b.publisher.contains(publisher)) match = false;
-            if (!"가능".equals(b.status)) match = false; // 대출 가능만
-            if (match) {
-                tableModel.addRow(new Object[]{b.title, b.author, b.publisher, b.isbn, b.status});
-            }
+        try {
+        	if(!title.isEmpty() && publisher.isEmpty())
+        		bookList = bookDAO.selectByBookTitle(title);
+        	else if(title.isEmpty() && !publisher.isEmpty())
+        		bookList = bookDAO.selectByBookPublisher(publisher);
+        	else if(!title.isEmpty() && !publisher.isEmpty())
+        		bookList = bookDAO.selectByBookTitleAndPublisher(title,publisher);
+     
+        } catch (SQLException e) {
+            e.printStackTrace();
+            bookList = new ArrayList<>();
+        }
+
+        for (SearchedBook b : bookList) {
+            tableModel.addRow(new Object[]{
+                b.getTitle(), b.getAuthor(), b.getPublisher(),
+                b.getIsbn(), b.getStatus(), b.getBookId()
+            });
         }
 
         if (tableModel.getRowCount() == 0) {
@@ -118,21 +137,15 @@ public class BorrowBook extends JDialog {
         // 실제로는 여기서 DB/파일에 대출 처리, 상태 변경 등
         String bookTitle = (String) tableModel.getValueAt(row, 0);
         String bookIsbn = (String) tableModel.getValueAt(row, 3);
+        int bookId = (int) tableModel.getValueAt(row, 5);
+        LoanDAO loanDAO = new LoanDAO();
+        loanDAO.borrowBook(bookId, SessionContext.getInstance().getCurrentUserId());
+       
+        
         JOptionPane.showMessageDialog(this,
             "도서 [" + bookTitle + "] (ISBN: " + bookIsbn + ")\n대출 완료!\n반납일은 대출일로부터 2주입니다.");
         // 대출 후 테이블에서 제거(화면 갱신)
         tableModel.removeRow(row);
     }
 
-    // Book 클래스 (내부 static 클래스로 예시)
-    static class Book {
-        String title, author, publisher, isbn, status;
-        public Book(String title, String author, String publisher, String isbn, String status) {
-            this.title = title;
-            this.author = author;
-            this.publisher = publisher;
-            this.isbn = isbn;
-            this.status = status;
-        }
-    }
 }
