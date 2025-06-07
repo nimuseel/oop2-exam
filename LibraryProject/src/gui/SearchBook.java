@@ -88,6 +88,35 @@ public class SearchBook extends JDialog {
 
         // 시작 시에는 항상 테이블 카드가 보이도록 설정
         cardLayout.show(tablePanel, TABLE_CARD);
+        
+     // ... (생성자 마지막 부분)
+        resultTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int row = resultTable.getSelectedRow();
+                if (row != -1) {
+                    String isbn = (String) tableModel.getValueAt(row, 3);
+                    Book selectedBook = null;
+                    for (Book b : bookList) {
+                        if (b.isbn.equals(isbn)) {
+                            selectedBook = b;
+                            break;
+                        }
+                    }
+                    if (selectedBook != null) {
+                        new BookDetail(
+                            null,
+                            selectedBook.title,
+                            selectedBook.author,
+                            selectedBook.publisher,
+                            selectedBook.isbn,
+                            selectedBook.status,
+                            selectedBook.imageUrl
+                        ).setVisible(true);
+                    }
+                }
+            }
+        });
+
     }
 
     // 검색 및 결과 테이블 표시
@@ -122,13 +151,14 @@ public class SearchBook extends JDialog {
 
     // Book 클래스 (내부 static 클래스로 예시)
     static class Book {
-        String title, author, publisher, isbn, status;
-        public Book(String title, String author, String publisher, String isbn, String status) {
+        String title, author, publisher, isbn, status, imageUrl;
+        public Book(String title, String author, String publisher, String isbn, String status, String imageUrl) {
             this.title = title;
             this.author = author;
             this.publisher = publisher;
             this.isbn = isbn;
             this.status = status;
+            this.imageUrl = imageUrl; 
         }
     }
 }

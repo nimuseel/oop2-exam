@@ -6,6 +6,7 @@ public class Book {
 	String title;
 	String author;
 	String publisher;
+	String imageUrl;
 	
 	public int getBookId() {
 		return bookId;
@@ -36,6 +37,12 @@ public class Book {
 	}
 	public void setPublisher(String publisher) {
 		this.publisher = publisher;
+	}
+	public String getImageUrl() {
+		return imageUrl;
+	}
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
 	}
 	
 	

@@ -59,6 +59,7 @@ public class BookDAO {
 				book.setPublisher(rs.getString("PUBLISHER"));
 				book.setIsbn(rs.getString("ISBN"));
 				book.setStatus(rs.getString("STATUS"));
+				book.setImageUrl(rs.getString("IMAGE_URL"));
 				books.add(book);
 			}
 		}
@@ -90,6 +91,7 @@ public class BookDAO {
 				book.setPublisher(rs.getString("PUBLISHER"));
 				book.setIsbn(rs.getString("ISBN"));
 				book.setStatus(rs.getString("STATUS"));
+				book.setImageUrl(rs.getString("IMAGE_URL"));
 				books.add(book);
 			}
 		}
@@ -127,6 +129,7 @@ public class BookDAO {
 				book.setPublisher(rs.getString("PUBLISHER"));
 				book.setIsbn(rs.getString("ISBN"));
 				book.setStatus(rs.getString("STATUS"));
+				book.setImageUrl(rs.getString("IMAGE_URL"));
 				books.add(book);
 			}
 		}
