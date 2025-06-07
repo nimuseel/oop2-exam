@@ -1,6 +1,8 @@
 package gui;
-import java.awt.EventQueue;
+
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -13,19 +15,19 @@ public class ReturnBook extends JDialog {
     private JTable resultTable;
     private DefaultTableModel tableModel;
 
-    // 예시 데이터: 실제로는 파일/DB에서 불러온 리스트를 사용
-    private List<Book> bookList = new ArrayList<>(Arrays.asList(
-        new Book("해리포터", "J.K.롤링", "문학동네", "1234567890", "대출중"),
-        new Book("데미안", "헤르만 헤세", "민음사", "9876543210", "대출중"),
-        new Book("자바의 정석", "남궁성", "도우출판", "1111222233334", "가능"),
-        new Book("해리포터", "J.K.롤링", "문학동네", "5555666677778", "대출중")
-    ));
+    private List<Book> bookList = Arrays.asList();
+
+    // CardLayout 관련 필드
+    private JPanel tablePanel;
+    private CardLayout cardLayout;
+    private static final String TABLE_CARD = "table";
+    private static final String EMPTY_CARD = "empty";
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                	ReturnBook dialog = new ReturnBook(null);
+                    ReturnBook dialog = new ReturnBook(null);
                     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
                     dialog.setVisible(true);
                 } catch (Exception e) {
@@ -65,9 +67,20 @@ public class ReturnBook extends JDialog {
             public boolean isCellEditable(int row, int column) { return false; }
         };
         resultTable = new JTable(tableModel);
+
+        // CardLayout으로 테이블 영역 구성
+        cardLayout = new CardLayout();
+        tablePanel = new JPanel(cardLayout);
+
         JScrollPane scrollPane = new JScrollPane(resultTable);
-        scrollPane.setBounds(26, 80, 584, 240);
-        getContentPane().add(scrollPane);
+        tablePanel.add(scrollPane, TABLE_CARD);
+
+        JLabel emptyLabel = new JLabel("검색 결과가 없습니다.", SwingConstants.CENTER);
+        emptyLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
+        tablePanel.add(emptyLabel, EMPTY_CARD);
+
+        tablePanel.setBounds(26, 80, 584, 240);
+        getContentPane().add(tablePanel);
 
         JButton returnBtn = new JButton("반납");
         returnBtn.setBounds(180, 340, 120, 40);
@@ -84,6 +97,9 @@ public class ReturnBook extends JDialog {
         returnBtn.addActionListener(e -> returnBook());
 
         closeBtn.addActionListener(e -> setVisible(false));
+
+        // 시작 시에는 항상 테이블 카드가 보이도록 설정
+        cardLayout.show(tablePanel, TABLE_CARD);
     }
 
     // 검색: 대출중인 도서만 표시
@@ -92,6 +108,12 @@ public class ReturnBook extends JDialog {
         String publisher = publisherField.getText().trim();
 
         tableModel.setRowCount(0);
+
+        // 검색어가 없으면 무조건 테이블 카드 보이도록
+        if (title.isEmpty() && publisher.isEmpty()) {
+            cardLayout.show(tablePanel, TABLE_CARD);
+            return;
+        }
 
         for (Book b : bookList) {
             boolean match = true;
@@ -103,8 +125,11 @@ public class ReturnBook extends JDialog {
             }
         }
 
+        // 검색 결과가 없으면 empty 카드, 있으면 테이블 카드
         if (tableModel.getRowCount() == 0) {
-            JOptionPane.showMessageDialog(this, "검색 결과가 없습니다.");
+            cardLayout.show(tablePanel, EMPTY_CARD);
+        } else {
+            cardLayout.show(tablePanel, TABLE_CARD);
         }
     }
 
@@ -125,6 +150,14 @@ public class ReturnBook extends JDialog {
             }
         }
         tableModel.removeRow(row);
+
+        // 반납 후 테이블이 비었고, 검색어가 있을 때만 empty 카드로 전환
+        String title = titleField.getText().trim();
+        String publisher = publisherField.getText().trim();
+        if (tableModel.getRowCount() == 0 && (!title.isEmpty() || !publisher.isEmpty())) {
+            cardLayout.show(tablePanel, EMPTY_CARD);
+        }
+
         JOptionPane.showMessageDialog(this, "도서가 반납되었습니다.");
     }
 

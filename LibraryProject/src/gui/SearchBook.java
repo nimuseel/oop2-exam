@@ -1,6 +1,7 @@
 package gui;
-import java.awt.EventQueue;
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -13,13 +14,13 @@ public class SearchBook extends JDialog {
     private JTable resultTable;
     private DefaultTableModel tableModel;
 
-    // 예시 데이터: 실제로는 파일/DB에서 불러온 리스트를 사용
-    private List<Book> bookList = Arrays.asList(
-        new Book("해리포터", "J.K.롤링", "문학동네", "1234567890", "가능"),
-        new Book("데미안", "헤르만 헤세", "민음사", "9876543210", "대출중"),
-        new Book("자바의 정석", "남궁성", "도우출판", "1111222233334", "가능"),
-        new Book("해리포터", "J.K.롤링", "문학동네", "5555666677778", "대출중")
-    );
+    private List<Book> bookList = Arrays.asList();
+
+    // CardLayout 관련 필드
+    private JPanel tablePanel;
+    private CardLayout cardLayout;
+    private static final String TABLE_CARD = "table";
+    private static final String EMPTY_CARD = "empty";
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -66,13 +67,27 @@ public class SearchBook extends JDialog {
         String[] columns = {"도서명", "저자", "출판사", "ISBN", "대출 여부"};
         tableModel = new DefaultTableModel(columns, 0);
         resultTable = new JTable(tableModel);
+
+        // CardLayout으로 테이블 영역 구성
+        cardLayout = new CardLayout();
+        tablePanel = new JPanel(cardLayout);
+
         JScrollPane scrollPane = new JScrollPane(resultTable);
-        scrollPane.setBounds(26, 130, 540, 200);
-        getContentPane().add(scrollPane);
+        tablePanel.add(scrollPane, TABLE_CARD);
+
+        JLabel emptyLabel = new JLabel("검색 결과가 없습니다.", SwingConstants.CENTER);
+        emptyLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
+        tablePanel.add(emptyLabel, EMPTY_CARD);
+
+        tablePanel.setBounds(26, 130, 540, 200);
+        getContentPane().add(tablePanel);
 
         // 조회 버튼: 검색 및 결과 표시
         searchBtn.addActionListener(e -> searchBooks());
         cancelBtn.addActionListener(e -> setVisible(false));
+
+        // 시작 시에는 항상 테이블 카드가 보이도록 설정
+        cardLayout.show(tablePanel, TABLE_CARD);
     }
 
     // 검색 및 결과 테이블 표시
@@ -81,6 +96,12 @@ public class SearchBook extends JDialog {
         String publisher = publisherField.getText().trim();
 
         tableModel.setRowCount(0); // 기존 결과 삭제
+
+        // 검색어가 없으면 무조건 테이블 카드 보이도록
+        if(title.isEmpty() && publisher.isEmpty()) {
+            cardLayout.show(tablePanel, TABLE_CARD);
+            return;
+        }
 
         for (Book b : bookList) {
             boolean match = true;
@@ -91,8 +112,11 @@ public class SearchBook extends JDialog {
             }
         }
 
+        // 검색 결과가 없으면 empty 카드, 있으면 테이블 카드
         if (tableModel.getRowCount() == 0) {
-            JOptionPane.showMessageDialog(this, "검색 결과가 없습니다.");
+            cardLayout.show(tablePanel, EMPTY_CARD);
+        } else {
+            cardLayout.show(tablePanel, TABLE_CARD);
         }
     }
 
