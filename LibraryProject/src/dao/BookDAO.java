@@ -14,13 +14,14 @@ import util.InsertResult;
 import util.RemoveResult;
 
 public class BookDAO {
-	public InsertResult insertBook(String title, String author, String publisher, String isbn) {
-		String sql = "INSERT INTO BOOK (TITLE, AUTHOR, PUBLISHER, ISBN) VALUES (?, ?, ?, ?)";
+	public InsertResult insertBook(String title, String author, String publisher, String isbn, String imageUrl) {
+		String sql = "INSERT INTO BOOK (TITLE, AUTHOR, PUBLISHER, ISBN, IMAGE_URL) VALUES (?, ?, ?, ?, ?)";
 		try (Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
 			pstmt.setString(1, title);
 			pstmt.setString(2, author);
 			pstmt.setString(3, publisher);
 			pstmt.setString(4, isbn);
+			pstmt.setString(5, imageUrl);
 
 			int result = pstmt.executeUpdate();
 			System.out.println("result : " + result);
