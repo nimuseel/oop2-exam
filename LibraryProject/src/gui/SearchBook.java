@@ -67,9 +67,22 @@ public class SearchBook extends JDialog {
         getContentPane().add(cancelBtn);
 
         // 테이블
-        String[] columns = {"도서명", "저자", "출판사", "ISBN", "대출 여부"};
-        tableModel = new DefaultTableModel(columns, 0);
+        String[] columns = {"도서명", "저자", "출판사", "ISBN", "대출 여부", "bookId", "이미지URL"};
+        tableModel = new DefaultTableModel(columns, 0) {
+        	private static final long serialVersionUID = 1L;
+
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+        };
         resultTable = new JTable(tableModel);
+        
+        resultTable.getColumnModel().getColumn(5).setMinWidth(0);
+		resultTable.getColumnModel().getColumn(5).setMaxWidth(0);
+		resultTable.getColumnModel().getColumn(5).setWidth(0);
+		resultTable.getColumnModel().getColumn(6).setMinWidth(0);
+		resultTable.getColumnModel().getColumn(6).setMaxWidth(0);
+		resultTable.getColumnModel().getColumn(6).setWidth(0);
 
         // CardLayout으로 테이블 영역 구성
         cardLayout = new CardLayout();
@@ -93,7 +106,7 @@ public class SearchBook extends JDialog {
         // 시작 시에는 항상 테이블 카드가 보이도록 설정
         cardLayout.show(tablePanel, TABLE_CARD);
         SearchUtil.searchBooks(tableModel, cardLayout, tablePanel);
-     // ... (생성자 마지막 부분)
+
         resultTable.addMouseListener(new java.awt.event.MouseAdapter() {
 			public void mouseClicked(java.awt.event.MouseEvent evt) {
 				if (evt.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(evt)) {
