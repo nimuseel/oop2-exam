@@ -1,7 +1,6 @@
 package gui;
 
 import java.awt.*;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
@@ -9,6 +8,7 @@ import javax.swing.table.DefaultTableModel;
 
 import dao.BookDAO;
 import dto.SearchedBook;
+import util.SearchUtil;
 
 public class DeleteBook extends JDialog {
 
@@ -101,52 +101,16 @@ public class DeleteBook extends JDialog {
 		closeBtn.setBounds(350, 340, 120, 40);
 		getContentPane().add(closeBtn);
 
-		searchBtn.addActionListener(e -> searchBooks());
+		searchBtn.addActionListener(e -> 
+			bookList = SearchUtil.searchBooks(tableModel, cardLayout, tablePanel, titleField.getText(), publisherField.getText()));
 		deleteBtn.addActionListener(e -> deleteBook());
 		closeBtn.addActionListener(e -> dispose());
 
-		// 시작 시에는 항상 테이블 카드가 보이도록 설정
+		// 시작 시에는 항상 테이블 카드가 보이도록 설정 + 전체 조회 실행
 		cardLayout.show(tablePanel, TABLE_CARD);
+		bookList = SearchUtil.searchBooks(tableModel, cardLayout, tablePanel);
 	}
-
-	private void searchBooks() {
-		String title = titleField.getText().trim();
-		String publisher = publisherField.getText().trim();
-
-		tableModel.setRowCount(0);
-
-		// 검색어가 없으면 무조건 테이블 카드 보이도록
-		if (title.isEmpty() && publisher.isEmpty()) {
-			cardLayout.show(tablePanel, TABLE_CARD);
-			return;
-		}
-
-		try {
-			if (!title.isEmpty() && publisher.isEmpty())
-				bookList = bookDAO.selectByBookTitle(title);
-			else if (title.isEmpty() && !publisher.isEmpty())
-				bookList = bookDAO.selectByBookPublisher(publisher);
-			else if (!title.isEmpty() && !publisher.isEmpty())
-				bookList = bookDAO.selectByBookTitleAndPublisher(title, publisher);
-			else
-				bookList = new ArrayList<>();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			bookList = new ArrayList<>();
-		}
-
-		for (SearchedBook b : bookList) {
-			tableModel.addRow(new Object[] { b.getTitle(), b.getAuthor(), b.getPublisher(), b.getIsbn(), b.getStatus(),
-					b.getBookId() });
-		}
-
-		// 검색 결과가 없으면 empty 카드, 있으면 테이블 카드
-		if (tableModel.getRowCount() == 0) {
-			cardLayout.show(tablePanel, EMPTY_CARD);
-		} else {
-			cardLayout.show(tablePanel, TABLE_CARD);
-		}
-	}
+	
 
 	private void deleteBook() {
 		int row = resultTable.getSelectedRow();
@@ -183,3 +147,4 @@ public class DeleteBook extends JDialog {
 		JOptionPane.showMessageDialog(this, "도서가 삭제되었습니다.");
 	}
 }
+	

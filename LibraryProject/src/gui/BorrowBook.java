@@ -10,6 +10,7 @@ import javax.swing.table.DefaultTableModel;
 import dao.BookDAO;
 import dao.LoanDAO;
 import dto.SearchedBook;
+import util.SearchUtil;
 import util.SessionContext;
 
 public class BorrowBook extends JDialog {
@@ -21,7 +22,7 @@ public class BorrowBook extends JDialog {
 	private JTable resultTable;
 	private DefaultTableModel tableModel;
 
-	private List<SearchedBookWithImage> bookList = new ArrayList<>();
+	private List<SearchedBook> bookList = new ArrayList<>();
 	private final BookDAO bookDAO = new BookDAO();
 
 	// CardLayout 관련 필드
@@ -108,8 +109,15 @@ public class BorrowBook extends JDialog {
 		closeBtn.setBounds(350, 340, 120, 40);
 		getContentPane().add(closeBtn);
 
-		// 검색 버튼
-		searchBtn.addActionListener(e -> searchBooks());
+		 searchBtn.addActionListener(e -> 
+			bookList = SearchUtil.searchBooks(tableModel, cardLayout, tablePanel, titleField.getText(), publisherField.getText()));
+	     // 대출 버튼
+	     borrowBtn.addActionListener(e -> borrowBook());
+	     closeBtn.addActionListener(e -> dispose());
+	
+	     // 시작 시에는 항상 테이블 카드가 보이도록 설정
+	     cardLayout.show(tablePanel, TABLE_CARD);
+	     bookList = SearchUtil.searchBooks(tableModel, cardLayout, tablePanel);
 
 		// 대출 버튼
 		borrowBtn.addActionListener(e -> borrowBook());
@@ -128,7 +136,6 @@ public class BorrowBook extends JDialog {
 						String isbn = (String) tableModel.getValueAt(row, 3);
 						String status = (String) tableModel.getValueAt(row, 4);
 						String imageUrl = (String) tableModel.getValueAt(row, 6);
-						System.out.println(imageUrl);
 						new BookDetail(null, title, author, publisher, isbn, status, imageUrl).setVisible(true);
 					}
 				}
@@ -137,46 +144,6 @@ public class BorrowBook extends JDialog {
 
 		// 시작 시에는 항상 테이블 카드가 보이도록 설정
 		cardLayout.show(tablePanel, TABLE_CARD);
-	}
-
-	// 검색: 대출 가능 도서만 표시
-	private void searchBooks() {
-		String title = titleField.getText().trim();
-		String publisher = publisherField.getText().trim();
-
-		tableModel.setRowCount(0);
-
-		// 검색어가 없으면 무조건 테이블 카드 보이도록
-		if (title.isEmpty() && publisher.isEmpty()) {
-			cardLayout.show(tablePanel, TABLE_CARD);
-			return;
-		}
-
-		// 검색어가 있을 때만 검색 수행
-		try {
-			if (!title.isEmpty() && publisher.isEmpty())
-				bookList = toWithImage(bookDAO.selectByBookTitle(title));
-			else if (title.isEmpty() && !publisher.isEmpty())
-				bookList = toWithImage(bookDAO.selectByBookPublisher(publisher));
-			else if (!title.isEmpty() && !publisher.isEmpty())
-				bookList = toWithImage(bookDAO.selectByBookTitleAndPublisher(title, publisher));
-			else
-				bookList = new ArrayList<>();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			bookList = new ArrayList<>();
-		}
-
-		for (SearchedBookWithImage b : bookList) {
-			tableModel.addRow(new Object[] { b.title, b.author, b.publisher, b.isbn, b.status, b.bookId, b.imageUrl });
-		}
-
-		// 검색 결과가 없으면 empty 카드, 있으면 테이블 카드
-		if (tableModel.getRowCount() == 0) {
-			cardLayout.show(tablePanel, EMPTY_CARD);
-		} else {
-			cardLayout.show(tablePanel, TABLE_CARD);
-		}
 	}
 
 	// 대출 처리
@@ -204,31 +171,5 @@ public class BorrowBook extends JDialog {
 			cardLayout.show(tablePanel, EMPTY_CARD);
 		}
 	}
-	
-	private List<SearchedBookWithImage> toWithImage(List<SearchedBook> list) {
-		List<SearchedBookWithImage> result = new ArrayList<>();
-		for (SearchedBook b : list) {
-			result.add(new SearchedBookWithImage(b.getTitle(), b.getAuthor(), b.getPublisher(), b.getIsbn(),
-					b.getStatus(), b.getBookId(), b.getImageUrl()));
-			System.out.println(b.getImageUrl());
-		}
-		return result;
-	}
 
-	// 상세정보 다이얼로그에 넘길 데이터 구조
-	static class SearchedBookWithImage {
-		String title, author, publisher, isbn, status, imageUrl;
-		int bookId;
-
-		public SearchedBookWithImage(String title, String author, String publisher, String isbn, String status,
-				int bookId, String imageUrl) {
-			this.title = title;
-			this.author = author;
-			this.publisher = publisher;
-			this.isbn = isbn;
-			this.status = status;
-			this.bookId = bookId;
-			this.imageUrl = imageUrl;
-		}
-	}
 }

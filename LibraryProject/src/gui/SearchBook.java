@@ -1,9 +1,13 @@
 package gui;
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+
+import dto.SearchedBook;
+import util.SearchUtil;
 
 public class SearchBook extends JDialog {
 
@@ -13,8 +17,7 @@ public class SearchBook extends JDialog {
     private JTextField publisherField;
     private JTable resultTable;
     private DefaultTableModel tableModel;
-
-    private List<Book> bookList = Arrays.asList();
+    private List<SearchedBook> bookList = new ArrayList<>();
 
     // CardLayout 관련 필드
     private JPanel tablePanel;
@@ -83,82 +86,30 @@ public class SearchBook extends JDialog {
         getContentPane().add(tablePanel);
 
         // 조회 버튼: 검색 및 결과 표시
-        searchBtn.addActionListener(e -> searchBooks());
-        cancelBtn.addActionListener(e -> setVisible(false));
+        searchBtn.addActionListener(e -> 
+			bookList = SearchUtil.searchBooks(tableModel, cardLayout, tablePanel, titleField.getText(), publisherField.getText()));
+        cancelBtn.addActionListener(e -> dispose());
 
         // 시작 시에는 항상 테이블 카드가 보이도록 설정
         cardLayout.show(tablePanel, TABLE_CARD);
-        
+        SearchUtil.searchBooks(tableModel, cardLayout, tablePanel);
      // ... (생성자 마지막 부분)
         resultTable.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                int row = resultTable.getSelectedRow();
-                if (row != -1) {
-                    String isbn = (String) tableModel.getValueAt(row, 3);
-                    Book selectedBook = null;
-                    for (Book b : bookList) {
-                        if (b.isbn.equals(isbn)) {
-                            selectedBook = b;
-                            break;
-                        }
-                    }
-                    if (selectedBook != null) {
-                        new BookDetail(
-                            null,
-                            selectedBook.title,
-                            selectedBook.author,
-                            selectedBook.publisher,
-                            selectedBook.isbn,
-                            selectedBook.status,
-                            selectedBook.imageUrl
-                        ).setVisible(true);
-                    }
-                }
-            }
-        });
+			public void mouseClicked(java.awt.event.MouseEvent evt) {
+				if (evt.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(evt)) {
+					int row = resultTable.getSelectedRow();
+					if (row != -1) {
+						String title = (String) tableModel.getValueAt(row, 0);
+						String author = (String) tableModel.getValueAt(row, 1);
+						String publisher = (String) tableModel.getValueAt(row, 2);
+						String isbn = (String) tableModel.getValueAt(row, 3);
+						String status = (String) tableModel.getValueAt(row, 4);
+						String imageUrl = (String) tableModel.getValueAt(row, 6);
+						new BookDetail(null, title, author, publisher, isbn, status, imageUrl).setVisible(true);
+					}
+				}
+			}
+		});
 
-    }
-
-    // 검색 및 결과 테이블 표시
-    private void searchBooks() {
-        String title = titleField.getText().trim();
-        String publisher = publisherField.getText().trim();
-
-        tableModel.setRowCount(0); // 기존 결과 삭제
-
-        // 검색어가 없으면 무조건 테이블 카드 보이도록
-        if(title.isEmpty() && publisher.isEmpty()) {
-            cardLayout.show(tablePanel, TABLE_CARD);
-            return;
-        }
-
-        for (Book b : bookList) {
-            boolean match = true;
-            if (!title.isEmpty() && !b.title.contains(title)) match = false;
-            if (!publisher.isEmpty() && !b.publisher.contains(publisher)) match = false;
-            if (match) {
-                tableModel.addRow(new Object[]{b.title, b.author, b.publisher, b.isbn, b.status});
-            }
-        }
-
-        // 검색 결과가 없으면 empty 카드, 있으면 테이블 카드
-        if (tableModel.getRowCount() == 0) {
-            cardLayout.show(tablePanel, EMPTY_CARD);
-        } else {
-            cardLayout.show(tablePanel, TABLE_CARD);
-        }
-    }
-
-    // Book 클래스 (내부 static 클래스로 예시)
-    static class Book {
-        String title, author, publisher, isbn, status, imageUrl;
-        public Book(String title, String author, String publisher, String isbn, String status, String imageUrl) {
-            this.title = title;
-            this.author = author;
-            this.publisher = publisher;
-            this.isbn = isbn;
-            this.status = status;
-            this.imageUrl = imageUrl; 
-        }
     }
 }

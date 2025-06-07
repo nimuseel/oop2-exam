@@ -64,7 +64,9 @@ public class ReturnBook extends JDialog {
         // 테이블
         String[] columns = {"도서명", "저자", "출판사", "ISBN", "대출 여부"};
         tableModel = new DefaultTableModel(columns, 0) {
-            public boolean isCellEditable(int row, int column) { return false; }
+            private static final long serialVersionUID = 1L;
+
+			public boolean isCellEditable(int row, int column) { return false; }
         };
         resultTable = new JTable(tableModel);
 

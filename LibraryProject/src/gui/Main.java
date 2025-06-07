@@ -1,6 +1,5 @@
 package gui;
 import javax.swing.*;
-import java.awt.event.*;
 
 public class Main extends JDialog {
     private static final long serialVersionUID = 1L;

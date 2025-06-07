@@ -36,8 +36,35 @@ public class BookDAO {
 			return InsertResult.FAIL;
 		}
 	}
+	
+	public List<SearchedBook> selectAllBooks() throws SQLException{
+		List<SearchedBook> books = new ArrayList<>();
+		
+		String sql = 
+			    "SELECT b.*, COALESCE(v.status, '대여가능') AS status " +
+			    "FROM book b " +
+			    "LEFT JOIN book_status_view v ON b.book_id = v.book_id " +
+			    "ORDER BY status ASC, b.title ASC";
+		
+		try(Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)){
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				SearchedBook book = new SearchedBook();
+				book.setBookId(rs.getInt("BOOK_ID"));
+				book.setTitle(rs.getString("TITLE"));
+				book.setAuthor(rs.getString("AUTHOR"));
+				book.setPublisher(rs.getString("PUBLISHER"));
+				book.setIsbn(rs.getString("ISBN"));
+				book.setStatus(rs.getString("STATUS"));
+				book.setImageUrl(rs.getString("IMAGE_URL"));
+				books.add(book);
+			}
+		}
+		
+		return books;
+	}
 
-	public List<SearchedBook> selectByBookTitle(String keyword) throws SQLException {
+	public List<SearchedBook> selectByBookTitle(String keyword, boolean isLoaned) throws SQLException {
 		List<SearchedBook> books = new ArrayList<>();
 		String sql = "SELECT b.*, \n" + "       LOCATE(?, REPLACE(b.title, ' ', '')) AS pos, \n" + "       v.status \n"
 				+ "FROM book b \n" + "JOIN book_status_view v ON b.book_id = v.book_id \n"
@@ -68,7 +95,7 @@ public class BookDAO {
 
 	}
 
-	public List<SearchedBook> selectByBookPublisher(String keyword) throws SQLException {
+	public List<SearchedBook> selectByBookPublisher(String keyword, boolean isLoaned) throws SQLException {
 		List<SearchedBook> books = new ArrayList<>();
 		String sql = "SELECT b.*, \n" + "       LOCATE(?, REPLACE(b.publisher, ' ', '')) AS pos, \n"
 				+ "       COALESCE(bsv.status, '대여가능') AS status \n" + "FROM book b \n"
@@ -99,7 +126,7 @@ public class BookDAO {
 		return books;
 	}
 
-	public List<SearchedBook> selectByBookTitleAndPublisher(String title, String publisher) throws SQLException {
+	public List<SearchedBook> selectByBookTitleAndPublisher(String title, String publisher, boolean isLoaned) throws SQLException {
 		List<SearchedBook> books = new ArrayList<>();
 		String sql = "SELECT b.*, \n" + "       LOCATE(?, REPLACE(b.title, ' ', '')) AS title_pos, \n"
 				+ "       LOCATE(?, REPLACE(b.publisher, ' ', '')) AS publisher_pos, \n"
