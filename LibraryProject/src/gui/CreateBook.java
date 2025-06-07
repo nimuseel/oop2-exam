@@ -94,6 +94,7 @@ public class CreateBook extends JDialog {
                 return;
             } else if(ir == InsertResult.SUCCESS) {
                 JOptionPane.showMessageDialog(this, "도서가 등록되었습니다.", "등록성공", JOptionPane.INFORMATION_MESSAGE);
+                dispose();
                 return;
             }
         });
