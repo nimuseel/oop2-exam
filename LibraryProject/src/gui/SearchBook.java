@@ -1,12 +1,9 @@
 package gui;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-import dto.SearchedBook;
 import util.SearchUtil;
 
 public class SearchBook extends JDialog {
@@ -17,7 +14,6 @@ public class SearchBook extends JDialog {
     private JTextField publisherField;
     private JTable resultTable;
     private DefaultTableModel tableModel;
-    private List<SearchedBook> bookList = new ArrayList<>();
 
     // CardLayout 관련 필드
     private JPanel tablePanel;
@@ -100,7 +96,7 @@ public class SearchBook extends JDialog {
 
         // 조회 버튼: 검색 및 결과 표시
         searchBtn.addActionListener(e -> 
-			bookList = SearchUtil.searchBooks(tableModel, cardLayout, tablePanel, titleField.getText(), publisherField.getText()));
+			 SearchUtil.searchBooks(tableModel, cardLayout, tablePanel, titleField.getText(), publisherField.getText()));
         cancelBtn.addActionListener(e -> dispose());
 
         // 시작 시에는 항상 테이블 카드가 보이도록 설정

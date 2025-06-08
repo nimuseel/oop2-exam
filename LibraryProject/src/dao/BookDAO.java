@@ -64,7 +64,7 @@ public class BookDAO {
 		return books;
 	}
 
-	public List<SearchedBook> selectByBookTitle(String keyword, boolean isLoaned) throws SQLException {
+	public List<SearchedBook> selectByBookTitle(String keyword) throws SQLException {
 		List<SearchedBook> books = new ArrayList<>();
 		String sql = "SELECT b.*, \n" + "       LOCATE(?, REPLACE(b.title, ' ', '')) AS pos, \n" + "       v.status \n"
 				+ "FROM book b \n" + "JOIN book_status_view v ON b.book_id = v.book_id \n"
@@ -95,7 +95,7 @@ public class BookDAO {
 
 	}
 
-	public List<SearchedBook> selectByBookPublisher(String keyword, boolean isLoaned) throws SQLException {
+	public List<SearchedBook> selectByBookPublisher(String keyword) throws SQLException {
 		List<SearchedBook> books = new ArrayList<>();
 		String sql = "SELECT b.*, \n" + "       LOCATE(?, REPLACE(b.publisher, ' ', '')) AS pos, \n"
 				+ "       COALESCE(bsv.status, '대여가능') AS status \n" + "FROM book b \n"
@@ -126,7 +126,7 @@ public class BookDAO {
 		return books;
 	}
 
-	public List<SearchedBook> selectByBookTitleAndPublisher(String title, String publisher, boolean isLoaned) throws SQLException {
+	public List<SearchedBook> selectByBookTitleAndPublisher(String title, String publisher) throws SQLException {
 		List<SearchedBook> books = new ArrayList<>();
 		String sql = "SELECT b.*, \n" + "       LOCATE(?, REPLACE(b.title, ' ', '')) AS title_pos, \n"
 				+ "       LOCATE(?, REPLACE(b.publisher, ' ', '')) AS publisher_pos, \n"

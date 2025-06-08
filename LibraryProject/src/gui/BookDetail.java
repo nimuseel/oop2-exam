@@ -6,7 +6,9 @@ import java.net.URL;
 
 public class BookDetail extends JDialog {
 
-    public BookDetail(Window parent, String title, String author, String publisher, String isbn, String status, String imageUrl) {
+    private static final long serialVersionUID = 1L;
+
+	public BookDetail(Window parent, String title, String author, String publisher, String isbn, String status, String imageUrl) {
         super(parent, "도서 상세 정보", ModalityType.APPLICATION_MODAL);
 
         setSize(400, 500);

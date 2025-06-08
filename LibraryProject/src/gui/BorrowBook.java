@@ -1,15 +1,11 @@
 package gui;
 
 import java.awt.*;
-import java.sql.SQLException;
-import java.util.*;
-import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-import dao.BookDAO;
 import dao.LoanDAO;
-import dto.SearchedBook;
+import util.InsertResult;
 import util.SearchUtil;
 import util.SessionContext;
 
@@ -22,8 +18,6 @@ public class BorrowBook extends JDialog {
 	private JTable resultTable;
 	private DefaultTableModel tableModel;
 
-	private List<SearchedBook> bookList = new ArrayList<>();
-	private final BookDAO bookDAO = new BookDAO();
 
 	// CardLayout 관련 필드
 	private JPanel tablePanel;
@@ -110,14 +104,14 @@ public class BorrowBook extends JDialog {
 		getContentPane().add(closeBtn);
 
 		 searchBtn.addActionListener(e -> 
-			bookList = SearchUtil.searchBooks(tableModel, cardLayout, tablePanel, titleField.getText(), publisherField.getText()));
+			 SearchUtil.searchBooks(tableModel, cardLayout, tablePanel, titleField.getText(), publisherField.getText()));
 	     // 대출 버튼
 	     borrowBtn.addActionListener(e -> borrowBook());
 	     closeBtn.addActionListener(e -> dispose());
 	
 	     // 시작 시에는 항상 테이블 카드가 보이도록 설정
 	     cardLayout.show(tablePanel, TABLE_CARD);
-	     bookList = SearchUtil.searchBooks(tableModel, cardLayout, tablePanel);
+	     SearchUtil.searchBooks(tableModel, cardLayout, tablePanel);
 
 		// 대출 버튼
 		borrowBtn.addActionListener(e -> borrowBook());
@@ -157,19 +151,13 @@ public class BorrowBook extends JDialog {
 		String bookIsbn = (String) tableModel.getValueAt(row, 3);
 		int bookId = (int) tableModel.getValueAt(row, 5);
 		LoanDAO loanDAO = new LoanDAO();
-		loanDAO.borrowBook(bookId, SessionContext.getInstance().getCurrentUserId());
-
-		JOptionPane.showMessageDialog(this,
-				"도서 [" + bookTitle + "] (ISBN: " + bookIsbn + ")\n대출 완료!\n반납일은 대출일로부터 2주입니다.");
-
-		tableModel.removeRow(row);
-
-		// 만약 테이블이 비면, 검색어가 있는 상태에서만 empty 카드로 전환
-		String title = titleField.getText().trim();
-		String publisher = publisherField.getText().trim();
-		if (tableModel.getRowCount() == 0 && (!title.isEmpty() || !publisher.isEmpty())) {
-			cardLayout.show(tablePanel, EMPTY_CARD);
+		InsertResult ir = loanDAO.borrowBook(bookId, SessionContext.getInstance().getCurrentUserId());
+		if(ir == InsertResult.SUCCESS) {
+			JOptionPane.showMessageDialog(this,
+					"도서 [" + bookTitle + "] (ISBN: " + bookIsbn + ")\n대출 완료!\n반납일은 대출일로부터 2주입니다.");
+			SearchUtil.searchBooks(tableModel, cardLayout, tablePanel);
+			titleField.setText("");
+			publisherField.setText("");
 		}
 	}
-
 }

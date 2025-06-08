@@ -1,13 +1,11 @@
 package gui;
 
 import java.awt.*;
-import java.util.*;
-import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import dao.BookDAO;
-import dto.SearchedBook;
+import util.RemoveResult;
 import util.SearchUtil;
 
 public class DeleteBook extends JDialog {
@@ -19,7 +17,6 @@ public class DeleteBook extends JDialog {
 	private JTable resultTable;
 	private DefaultTableModel tableModel;
 
-	private List<SearchedBook> bookList = new ArrayList<>();
 	private final BookDAO bookDAO = new BookDAO();
 
 	// CardLayout 관련 필드
@@ -102,13 +99,13 @@ public class DeleteBook extends JDialog {
 		getContentPane().add(closeBtn);
 
 		searchBtn.addActionListener(e -> 
-			bookList = SearchUtil.searchBooks(tableModel, cardLayout, tablePanel, titleField.getText(), publisherField.getText()));
+		SearchUtil.searchBooks(tableModel, cardLayout, tablePanel, titleField.getText(), publisherField.getText()));
 		deleteBtn.addActionListener(e -> deleteBook());
 		closeBtn.addActionListener(e -> dispose());
 
 		// 시작 시에는 항상 테이블 카드가 보이도록 설정 + 전체 조회 실행
 		cardLayout.show(tablePanel, TABLE_CARD);
-		bookList = SearchUtil.searchBooks(tableModel, cardLayout, tablePanel);
+		SearchUtil.searchBooks(tableModel, cardLayout, tablePanel);
 	}
 	
 
@@ -125,16 +122,7 @@ public class DeleteBook extends JDialog {
 
 		int bookId = (int) tableModel.getValueAt(row, 5);
 
-		Iterator<SearchedBook> it = bookList.iterator();
-		while (it.hasNext()) {
-			SearchedBook book = it.next();
-			if (book.getBookId() == bookId) {
-				bookDAO.deleteBook(bookId); // 실제 DB 삭제
-				it.remove();
-				break;
-			}
-		}
-
+		RemoveResult rr = bookDAO.deleteBook(bookId); // 실제 DB 삭제
 		tableModel.removeRow(row);
 
 		// 삭제 후 테이블이 비었고, 검색어가 있을 때만 empty 카드로 전환
@@ -143,8 +131,13 @@ public class DeleteBook extends JDialog {
 		if (tableModel.getRowCount() == 0 && (!title.isEmpty() || !publisher.isEmpty())) {
 			cardLayout.show(tablePanel, EMPTY_CARD);
 		}
-
-		JOptionPane.showMessageDialog(this, "도서가 삭제되었습니다.");
+		
+		if(rr.equals(RemoveResult.SUCCESS))
+			JOptionPane.showMessageDialog(this, "도서가 삭제되었습니다.");
+			titleField.setText("");
+			publisherField.setText("");
+			SearchUtil.searchBooks(tableModel, cardLayout, tablePanel);
+			
 	}
 }
 	

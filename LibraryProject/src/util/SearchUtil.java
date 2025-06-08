@@ -16,8 +16,8 @@ public class SearchUtil {
 	private static final String TABLE_CARD = "table";
     private static final String EMPTY_CARD = "empty";
 	
-	public static  List<SearchedBook> searchBooks(DefaultTableModel tableModel, CardLayout cardLayout, JPanel tablePanel) {
-		 List<SearchedBook> bookList = new ArrayList<>();
+	public static void searchBooks(DefaultTableModel tableModel, CardLayout cardLayout, JPanel tablePanel) {
+		List<SearchedBook> bookList = new ArrayList<>();
 		tableModel.setRowCount(0);
 		
 		try {
@@ -38,21 +38,19 @@ public class SearchUtil {
 		} else {
 			cardLayout.show(tablePanel, TABLE_CARD);
 		}
-		
-		return bookList;
 	}
 
-	public static List<SearchedBook> searchBooks(DefaultTableModel tableModel, CardLayout cardLayout, JPanel tablePanel, String title, String publisher) {
+	public static void searchBooks(DefaultTableModel tableModel, CardLayout cardLayout, JPanel tablePanel, String title, String publisher) {
 		List<SearchedBook> bookList = new ArrayList<>();
 		tableModel.setRowCount(0);
 
 		try {
 			if (!title.isEmpty() && publisher.isEmpty())
-				bookList = bookDAO.selectByBookTitle(title, false);
+				bookList = bookDAO.selectByBookTitle(title);
 			else if (title.isEmpty() && !publisher.isEmpty())
-				bookList = bookDAO.selectByBookPublisher(publisher, false);
+				bookList = bookDAO.selectByBookPublisher(publisher);
 			else if (!title.isEmpty() && !publisher.isEmpty())
-				bookList = bookDAO.selectByBookTitleAndPublisher(title, publisher, false);
+				bookList = bookDAO.selectByBookTitleAndPublisher(title, publisher);
 			else
 				bookList = new ArrayList<>();
 		} catch (SQLException e) {
@@ -71,7 +69,5 @@ public class SearchUtil {
 		} else {
 			cardLayout.show(tablePanel, TABLE_CARD);
 		}
-		
-		return bookList;
 	}
 }

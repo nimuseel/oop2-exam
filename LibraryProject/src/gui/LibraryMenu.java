@@ -1,6 +1,7 @@
 package gui;
 import javax.swing.*;
-import java.awt.event.*;
+
+import util.SessionContext;
 
 public class LibraryMenu extends JDialog {
     private static final long serialVersionUID = 1L;
@@ -34,7 +35,10 @@ public class LibraryMenu extends JDialog {
 
         logoutBtn.addActionListener(e -> {
             // 로그아웃 처리 후 다이얼로그 닫기
-            setVisible(false);
+            SessionContext.getInstance().clear();
+            Main main = new Main();
+            dispose();
+            main.setVisible(true);
             // 필요하다면 여기서 메인화면(로그인 등) 호출
         });
 
@@ -69,7 +73,7 @@ public class LibraryMenu extends JDialog {
             closeBtn.setBounds(120, 280, 150, 40);
             getContentPane().add(closeBtn);
 
-            closeBtn.addActionListener(e -> setVisible(false));
+            closeBtn.addActionListener(e -> dispose());
         }
 
         borrowBtn.addActionListener(e -> {
