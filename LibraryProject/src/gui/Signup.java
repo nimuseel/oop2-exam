@@ -81,9 +81,9 @@ public class Signup extends JDialog {
 		getContentPane().add(pwConfirmField);
 
 		JButton registerBtn = new JButton("회원가입");
-		registerBtn.setBounds(60, 210, 120, 40);
+		registerBtn.setBounds(120, 210, 100, 40);
 		JButton cancelBtn = new JButton("취소");
-		cancelBtn.setBounds(210, 210, 120, 40);
+		cancelBtn.setBounds(249, 210, 100, 40);
 		getContentPane().add(registerBtn);
 		getContentPane().add(cancelBtn);
 
