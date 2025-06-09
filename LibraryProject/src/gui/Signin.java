@@ -64,9 +64,9 @@ public class Signin extends JDialog {
         getContentPane().add(pwField);
 
         JButton loginBtn = new JButton("로그인");
-        loginBtn.setBounds(97, 142, 120, 40);
+        loginBtn.setBounds(120, 142, 107, 40);
         JButton signupBtn = new JButton("회원가입");
-        signupBtn.setBounds(229, 142, 120, 40);
+        signupBtn.setBounds(242, 142, 107, 40);
         getContentPane().add(loginBtn);
         getContentPane().add(signupBtn);
 
