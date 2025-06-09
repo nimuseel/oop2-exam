@@ -37,7 +37,7 @@ public class SearchBook extends JDialog {
 
     public SearchBook(JFrame parent) {
         super(parent, "도서 조회", true);
-        setSize(600, 400);
+        setSize(650, 480);
         setLocationRelativeTo(parent);
         getContentPane().setLayout(null);
 
@@ -56,9 +56,9 @@ public class SearchBook extends JDialog {
         getContentPane().add(publisherField);
 
         JButton searchBtn = new JButton("조회");
-        searchBtn.setBounds(180, 75, 100, 35);
+        searchBtn.setBounds(530, 20, 80, 40);
         JButton cancelBtn = new JButton("닫기");
-        cancelBtn.setBounds(300, 75, 100, 35);
+        cancelBtn.setBounds(263, 363, 100, 35);
         getContentPane().add(searchBtn);
         getContentPane().add(cancelBtn);
 
@@ -91,7 +91,7 @@ public class SearchBook extends JDialog {
         emptyLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
         tablePanel.add(emptyLabel, EMPTY_CARD);
 
-        tablePanel.setBounds(26, 130, 540, 200);
+        tablePanel.setBounds(26, 80, 584, 240);
         getContentPane().add(tablePanel);
 
         // 조회 버튼: 검색 및 결과 표시
