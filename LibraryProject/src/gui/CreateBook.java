@@ -73,9 +73,9 @@ public class CreateBook extends JDialog {
 
         // 버튼 위치 조정
         JButton saveBtn = new JButton("저장");
-        saveBtn.setBounds(47, 356, 182, 61);
+        saveBtn.setBounds(169, 356, 100, 40);
         JButton cancelBtn = new JButton("취소");
-        cancelBtn.setBounds(239, 356, 182, 61);
+        cancelBtn.setBounds(298, 356, 100, 40);
         getContentPane().add(saveBtn);
         getContentPane().add(cancelBtn);
 
