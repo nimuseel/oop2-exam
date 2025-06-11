@@ -125,6 +125,8 @@ public class ReturnBook extends JDialog {
 			setTable(loanDAO.searchLoansByPublisher(publisher));
 		else if (!title.isEmpty() && !publisher.isEmpty())
 			setTable(loanDAO.searchLoansByTitleAndPublisher(title, publisher));
+		else
+			setTable(loanDAO.searchLoan());
 
 	}
 

@@ -54,6 +54,7 @@ public class LibraryMenu extends JDialog {
 
             addBtn.addActionListener(e -> {
                 CreateBook createBook = new CreateBook(null);
+                createBook.setAlwaysOnTop(true);
                 createBook.setVisible(true);
                 createBook.setModal(true);
             });
@@ -64,6 +65,7 @@ public class LibraryMenu extends JDialog {
 
             deleteBtn.addActionListener(e -> {
                 DeleteBook deleteBook = new DeleteBook(null);
+                deleteBook.setAlwaysOnTop(true);
                 deleteBook.setVisible(true);
                 deleteBook.setModal(true);
             });
@@ -83,19 +85,21 @@ public class LibraryMenu extends JDialog {
 
         borrowBtn.addActionListener(e -> {
             BorrowBook borrowBook = new BorrowBook(null);
+            borrowBook.setAlwaysOnTop(true);
             borrowBook.setVisible(true);
             borrowBook.setModal(true);
-            borrowBook.setAlwaysOnTop(true);
         });
 
         returnBtn.addActionListener(e -> {
             ReturnBook returnBook = new ReturnBook(null);
+            returnBook.setAlwaysOnTop(true);
             returnBook.setVisible(true);
             returnBook.setModal(true);
         });
 
         searchBtn.addActionListener(e -> {
             SearchBook searchBook = new SearchBook(null);
+            searchBook.setAlwaysOnTop(true);
             searchBook.setVisible(true);
             searchBook.setModal(true);
         });

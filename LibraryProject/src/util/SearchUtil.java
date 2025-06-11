@@ -52,7 +52,7 @@ public class SearchUtil {
 			else if (!title.isEmpty() && !publisher.isEmpty())
 				bookList = bookDAO.selectByBookTitleAndPublisher(title, publisher);
 			else
-				bookList = new ArrayList<>();
+				bookList = bookDAO.selectAllBooks();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			bookList = new ArrayList<>();
