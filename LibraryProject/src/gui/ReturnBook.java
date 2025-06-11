@@ -8,6 +8,7 @@ import javax.swing.table.DefaultTableModel;
 
 import dao.LoanDAO;
 import dto.SearchedLoan;
+import util.SessionContext;
 
 public class ReturnBook extends JDialog {
 
@@ -40,7 +41,7 @@ public class ReturnBook extends JDialog {
 	}
 
 	public ReturnBook(JFrame parent) {
-		super(parent, "도서 반납", true);
+		super(parent, SessionContext.getInstance().getCurrentUserId() + "님" +  " - 도서 반납", true);
 		setSize(650, 480);
 		setLocationRelativeTo(parent);
 		getContentPane().setLayout(null);

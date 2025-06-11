@@ -6,22 +6,22 @@ import util.SessionContext;
 public class LibraryMenu extends JDialog {
     private static final long serialVersionUID = 1L;
 
-    public LibraryMenu(JFrame parent, boolean isAdmin) {
+    public LibraryMenu(JFrame parent, String userId, boolean isAdmin) {
         super(parent, "메뉴", true);
         setSize(400, isAdmin ? 450 : 350);
         setLocationRelativeTo(parent);
         getContentPane().setLayout(null);
 
         JButton borrowBtn = new JButton("도서 대출");
-        borrowBtn.setBounds(120, 30, 150, 40);
+        borrowBtn.setBounds(120, 50, 150, 40);
         getContentPane().add(borrowBtn);
 
         JButton returnBtn = new JButton("도서 반납");
-        returnBtn.setBounds(120, 80, 150, 40);
+        returnBtn.setBounds(120, 100, 150, 40);
         getContentPane().add(returnBtn);
 
         JButton searchBtn = new JButton("도서 조회");
-        searchBtn.setBounds(120, 130, 150, 40);
+        searchBtn.setBounds(120, 150, 150, 40);
         getContentPane().add(searchBtn);
 
         // 로그아웃 버튼 (어드민/일반 모두)
@@ -32,6 +32,10 @@ public class LibraryMenu extends JDialog {
             logoutBtn.setBounds(120, 230, 150, 40);
         }
         getContentPane().add(logoutBtn);
+        
+        JLabel lblWelcome = new JLabel(userId + "님," +  " 환영합니다!");
+        lblWelcome.setBounds(146, 22, 109, 16);
+        getContentPane().add(lblWelcome);
 
         logoutBtn.addActionListener(e -> {
             // 로그아웃 처리 후 다이얼로그 닫기
@@ -44,7 +48,7 @@ public class LibraryMenu extends JDialog {
 
         if (isAdmin) {
             JButton addBtn = new JButton("도서 추가");
-            addBtn.setBounds(120, 180, 150, 40);
+            addBtn.setBounds(120, 200, 150, 40);
             getContentPane().add(addBtn);
 
             addBtn.addActionListener(e -> {
@@ -54,7 +58,7 @@ public class LibraryMenu extends JDialog {
             });
 
             JButton deleteBtn = new JButton("도서 삭제");
-            deleteBtn.setBounds(120, 230, 150, 40);
+            deleteBtn.setBounds(120, 250, 150, 40);
             getContentPane().add(deleteBtn);
 
             deleteBtn.addActionListener(e -> {

@@ -5,6 +5,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import util.SearchUtil;
+import util.SessionContext;
 
 public class SearchBook extends JDialog {
 
@@ -36,7 +37,7 @@ public class SearchBook extends JDialog {
     }
 
     public SearchBook(JFrame parent) {
-        super(parent, "도서 조회", true);
+        super(parent, SessionContext.getInstance().getCurrentUserId() + "님" +  " - 도서 조회", true);
         setSize(650, 480);
         setLocationRelativeTo(parent);
         getContentPane().setLayout(null);

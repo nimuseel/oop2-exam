@@ -20,7 +20,7 @@ public class SessionContext {
     public String getCurrentUserId() {
         return currentUserId;
     }
-
+    
     public void clear() {
         currentUserId = null;
     }

@@ -40,7 +40,7 @@ public class BorrowBook extends JDialog {
 	}
 
 	public BorrowBook(JFrame parent) {
-		super(parent, "도서 대출", true);
+		super(parent, SessionContext.getInstance().getCurrentUserId() + "님" + " - 도서 대출", true);
 		setSize(650, 480);
 		setLocationRelativeTo(parent);
 		getContentPane().setLayout(null);

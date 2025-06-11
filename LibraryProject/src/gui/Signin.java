@@ -80,8 +80,8 @@ public class Signin extends JDialog {
         		UserDAO userDAO = new UserDAO();
         		User user = userDAO.loginUser(id, pw);
         		if (user != null) {
-        		    LibraryMenu lm = new LibraryMenu(null, user.isAdmin());
-        		    SessionContext.getInstance().setCurrentUserId(id);
+        			SessionContext.getInstance().setCurrentUserId(id);
+        		    LibraryMenu lm = new LibraryMenu(null, user.getUserId(), user.isAdmin());
         		    setVisible(false);	
         		    lm.setVisible(true);
         		    lm.setAlwaysOnTop(true);
