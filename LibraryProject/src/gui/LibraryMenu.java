@@ -34,7 +34,8 @@ public class LibraryMenu extends JDialog {
         getContentPane().add(logoutBtn);
         
         JLabel lblWelcome = new JLabel(userId + "님," +  " 환영합니다!");
-        lblWelcome.setBounds(146, 22, 109, 16);
+        lblWelcome.setBounds(6, 22, 388, 16);
+        lblWelcome.setHorizontalAlignment(SwingConstants.CENTER);
         getContentPane().add(lblWelcome);
 
         logoutBtn.addActionListener(e -> {
