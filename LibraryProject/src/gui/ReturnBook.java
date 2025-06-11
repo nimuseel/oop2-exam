@@ -144,13 +144,12 @@ public class ReturnBook extends JDialog {
 			return;
 		}
 
-		// 실제로는 파일/DB에서 상태 변경 필요
 		int loanId = (int)tableModel.getValueAt(row, 7);
 		tableModel.removeRow(row);
 		
 		boolean isReturned = loanDAO.returnBook(loanId);
 		// 반납 후 테이블이 비었고, 검색어가 있을 때만 empty 카드로 전환
-		if(isReturned) {
+		if (isReturned) {
 			JOptionPane.showMessageDialog(this, "도서가 반납되었습니다.");
 			titleField.setText("");
 			publisherField.setText("");

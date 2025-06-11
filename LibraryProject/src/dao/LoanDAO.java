@@ -45,7 +45,7 @@ public class LoanDAO {
 			    "       l.loan_id, l.loan_date, l.due_date, l.is_returned, l.book_id " +
 			    "FROM loan l " +
 			    "JOIN book b ON l.book_id = b.book_id " +
-			    "WHERE l.user_id = ? " +
+			    "WHERE l.user_id = ? AND l.is_returned = false " +
 			    "ORDER BY l.is_returned ASC, l.loan_date DESC";
 
 		try (Connection conn = DBUtil.getConnection();
