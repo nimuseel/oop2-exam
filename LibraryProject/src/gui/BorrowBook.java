@@ -143,21 +143,25 @@ public class BorrowBook extends JDialog {
 	// 대출 처리
 	private void borrowBook() {
 		int row = resultTable.getSelectedRow();
-		if (row == -1) {
-			JOptionPane.showMessageDialog(this, "대출할 도서를 선택하세요.");
-			return;
-		}
+		System.out.println(row);
+		
 		String bookTitle = (String) tableModel.getValueAt(row, 0);
 		String bookIsbn = (String) tableModel.getValueAt(row, 3);
 		int bookId = (int) tableModel.getValueAt(row, 5);
 		LoanDAO loanDAO = new LoanDAO();
 		InsertResult ir = loanDAO.borrowBook(bookId, SessionContext.getInstance().getCurrentUserId());
-		if(ir == InsertResult.SUCCESS) {
+		if (ir == InsertResult.SUCCESS) {
 			JOptionPane.showMessageDialog(this,
 					"도서 [" + bookTitle + "] (ISBN: " + bookIsbn + ")\n대출 완료!\n반납일은 대출일로부터 2주입니다.");
 			SearchUtil.searchBooks(tableModel, cardLayout, tablePanel);
 			titleField.setText("");
 			publisherField.setText("");
+			return;
+		}
+		
+		if (row == -1) {
+			JOptionPane.showMessageDialog(this, "대출할 도서를 선택하세요.");
+			return;
 		}
 	}
 }
